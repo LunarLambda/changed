@@ -1,4 +1,4 @@
-`Cd`: A "smart pointer" that tracks changes to the data it owns.
+`Cd`: A wrapper type that tracks mutable borrows of the data it owns.
 
 ## Usage
 ```
@@ -24,7 +24,7 @@ assert!(!test.changed());
 ```
 
 ## How it works
-Technically, it doesn't track changes. It tracks calls to `deref_mut()`
-so it is entirely possible to call `deref_mut()` and not change it, giving a false positive.
+`Cd` tracks calls to `deref_mut()`, meaning it is possible to call `deref_mut()` and not change
+it, creating a false positive. Use equality to detect actual changes to the value.
 
-Along with that, there is a function to mutate a `Cd` without tripping change detection. 
+Along with that, there is a function to mutate a `Cd` without tripping change detection.
