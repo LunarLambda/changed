@@ -5,6 +5,7 @@ use std::ops::{Deref, DerefMut};
 /// Cd: Change Detection
 ///
 /// Start by creating one with [`new()`](Cd::new()).
+#[derive(Debug, Default)]
 pub struct Cd<T> {
     data: T,
     changed: bool,
@@ -13,6 +14,7 @@ pub struct Cd<T> {
 impl<T> Cd<T> {
     /// Create a new Cd with data.
     /// It is initialized to false for change detection.
+    /// Same as [`Cd::default()`].
     ///
     /// ```
     /// use changed::Cd;
@@ -118,16 +120,12 @@ impl<T> DerefMut for Cd<T> {
     }
 }
 
-/// Implement [`Default`] if `T` does. Change detection is initialized to false.
-/// ```
-/// use changed::Cd;
-/// // 0 is default for i32.
-/// let zero: Cd<i32> = Cd::default();
-/// assert!(!zero.changed());
-/// ```
-impl<T: Default> Default for Cd<T> {
-    fn default() -> Self {
-        Cd::new(T::default())
+/// Implement [`PartialEq<T>`] if `T` does.
+///
+/// Allows checking `Cd<T> == T`.
+impl<T: PartialEq> PartialEq<T> for Cd<T> {
+    fn eq(&self, other: &T) -> bool {
+        &self.data == other
     }
 }
 
